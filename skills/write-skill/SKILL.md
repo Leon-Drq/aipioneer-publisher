@@ -105,6 +105,55 @@ curl -s "https://example.com/article" | grep -oE 'https?://[^"<>]+\.(jpg|jpeg|pn
 | **数据图** | 图表、benchmark、对比 | 证明观点 | 核心论述后 |
 | **场景图** | 使用场景、案例展示 | 具体化 | 功能介绍后 |
 | **概念图** | 架构图、流程图 | 解释原理 | 技术讲解后 |
+| **嵌入推文** | 引用的 tweet 截图 | 案例证明 | 引用段落旁 |
+
+### 2.1 X/Twitter 特殊处理
+
+X 文章（长推文/文章）中常包含：
+- **媒体图片**：直接附加的图片（media_entities）
+- **嵌入推文**：引用的其他推文（atomic blocks / entityMap）
+
+**提取方法**：
+```bash
+# 使用 fxtwitter API 获取完整内容
+curl -s "https://api.fxtwitter.com/status/推文ID" | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+
+# 提取媒体图片
+tweet = data.get('tweet', {})
+article = tweet.get('article', {})
+
+# 1. 直接媒体图片
+if 'media_entities' in article:
+    for media in article['media_entities']:
+        url = media.get('media_info', {}).get('original_img_url')
+        if url:
+            print(f'MEDIA: {url}')
+
+# 2. 嵌入推文（需要进一步获取）
+if 'entityMap' in article:
+    for ent in article.get('entityMap', []):
+        if ent.get('value', {}).get('type') == 'TWEET':
+            tweet_id = ent.get('value', {}).get('data', {}).get('tweetId')
+            print(f'EMBED_TWEET: {tweet_id}')
+"
+
+# 下载嵌入推文截图
+for tweet_id in 嵌入推文ID列表; do
+    curl -sL "https://api.fxtwitter.com/status/${tweet_id}" -o "tweet_${tweet_id}.json"
+    # 提取推文中的图片
+    python3 -c "
+import json
+with open('tweet_${tweet_id}.json') as f:
+    data = json.load(f)
+media = data.get('tweet', {}).get('media', {})
+if 'photos' in media:
+    for photo in media['photos']:
+        print(photo.get('url'))
+" | xargs curl -O
+done
+```
 
 ### 3. 图片匹配规则
 
