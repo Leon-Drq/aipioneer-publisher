@@ -100,11 +100,30 @@ npx aipioneer-publisher publish "链接" \
 
 ## 🎨 支持的排版样式
 
-| 样式 | 特点 |
-|------|------|
-| **ai-pioneer-black** | 纯黑标签 + 80px 章节数字 + 纯黑强调 |
-| ~~ai-pioneer-blue~~ | Frakta 蓝 #0051A8（已弃用） |
-| ~~ai-fan~~ | 橙红主色（已弃用） |
+| 样式 | 版本 | 主色 | 特点 |
+|------|------|------|------|
+| **ai-pioneer-v1** | v1.0 | `#000000` | 纯黑标签 + 章节数字重叠 + 浅灰引用 |
+| **ai-pioneer-v2** | v2.0 | `#0E61AC` | 品牌头图 + 奶润米杏引用 + 深海宝蓝强调 |
+| **ai-pioneer-v3** | v3.0 | `#000000` | 章节数字在标题上方（无遮挡）+ 浅灰引用 |
+
+### 版本选择建议
+
+- **v1.0**: 极简现代，适合短平快的热点内容
+- **v2.0**: 温暖专业，适合品牌感强的深度内容
+- **v3.0**: 清晰阅读，适合长文和复杂结构内容（推荐）
+
+### 使用示例
+
+```bash
+# v1.0 - 纯黑极简
+npx aipioneer-publisher publish "链接" --theme ai-pioneer-v1
+
+# v2.0 - 深海宝蓝
+npx aipioneer-publisher publish "链接" --theme ai-pioneer-v2
+
+# v3.0 - 章节数字优化（推荐）
+npx aipioneer-publisher publish "链接" --theme ai-pioneer-v3
+```
 
 ## 🛠️ 系统架构
 
